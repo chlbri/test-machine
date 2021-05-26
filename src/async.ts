@@ -34,11 +34,16 @@ export async function generateAsyncMachineTest<
 
   const states = [service.state];
 
-  service.subscribe(state => {
+  const obs = service.subscribe(state => {
     if (state.changed) states.push(state);
   });
 
-  const sleeper = () => sleep(timeout);
+  const sleeper = () => {
+    return sleep(timeout).finally(() => {
+      obs.unsubscribe();
+      service.stop();
+    });
+  };
 
   describe(invite, () => {
     beforeAll(sleeper);
