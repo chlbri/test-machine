@@ -126,7 +126,7 @@ describe('Sync', () => {
   generateSyncMachineTest({
     machine: lightMachine,
     events: ['TIMER', 'TIMER', 'TIMER', 'TIMER', 'TIMER', 'TIMER'],
-    values: ['idle', 'green', 'yellow', 'red', 'red', 'green'],
+    values: ['idle', 'green', 'yellow', 'red', 'red', 'green', 'yellow'],
     contexts: [
       {
         elapsed: 0,

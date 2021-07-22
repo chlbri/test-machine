@@ -36,7 +36,7 @@ export function generateSyncMachineTest<TContext, TEvent extends EventObject>({
   for (let index = 0; index < values.length; index++) {
     const value = values[index];
     let state: State<TContext, TEvent>;
-    const event = events[index];
+    const event = events[index-1];
     const sender = () => {
       send(event);
     };
@@ -61,9 +61,7 @@ export function generateSyncMachineTest<TContext, TEvent extends EventObject>({
         describe(nanoid(), () => {
           beforeAll(sender);
           it(`Value is the ${value}`, async () => {
-            // await sleep(waiter);
             state = machineStates[index];
-            // if (state)
             expect(state.matches(value)).toBeTruthy();
           });
           if (_context) {
