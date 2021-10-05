@@ -1,6 +1,6 @@
 import { nanoid } from 'nanoid';
-import { EventObject, interpret, createMachine } from 'xstate';
-import { sleep, withoutSpawnRef } from './functions';
+import { EventObject, interpret } from 'xstate';
+import { sleep } from './functions';
 import { GenerateAsyncTestsForMachineArgs } from './types';
 
 export * from './functions';
@@ -15,13 +15,13 @@ export async function generateAsyncMachineTest<
   initialState,
   machine,
   events,
-  waiterBeforeEachEvent = 100,
+  waiterBeforeEachEvent = 0,
   contexts = [] as any,
   values,
   timeout = 5000,
   subscribers = [],
 }: GenerateAsyncTestsForMachineArgs<TContext, TEvent>) {
-  const _machine = createMachine(machine.config, machine.options).withContext({
+  const _machine = machine.withContext({
     ...machine.initialState.context,
     ...initialContext,
   });
@@ -55,14 +55,14 @@ export async function generateAsyncMachineTest<
           expect(value).toBeDefined();
           expect(state).toBeDefined();
           expect(state.matches(value)).toBe(true);
-        });
+        }, 2000);
         if (contexts[index]) {
           it('The context matches', () => {
             const state = states[index];
             const context = contexts[index];
-            const _context = withoutSpawnRef(state.context);
+            const _context = state.context;
             expect(context).toStrictEqual(_context);
-          });
+          }, 2000);
         }
       });
     }

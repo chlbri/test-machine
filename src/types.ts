@@ -45,8 +45,10 @@ export type GenerateSyncTestsForMachineArgs<
   machine: StateMachine<TContext, TEvent>;
   events: Event<TEvent>[];
   contexts?: Nullish<SimpleContext<TContext>>[];
-  values: StateValue[];
+  values: string[];
   subscribers?: Subscriber<TContext, TEvent>[];
+    invite: string;
+
 };
 
 export type SimpleContext<T> = {
@@ -59,5 +61,4 @@ export type GenerateAsyncTestsForMachineArgs<
 > = GenerateSyncTestsForMachineArgs<TContext, TEvent> & {
   waiterBeforeEachEvent?: number;
   timeout?: number;
-  invite: string;
 };

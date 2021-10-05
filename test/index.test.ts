@@ -1,27 +1,26 @@
-import { assign, createMachine, forwardTo, send, spawn } from 'xstate/lib';
+import { assign, createMachine } from 'xstate/lib';
 import { generateAsyncMachineTest, generateSyncMachineTest } from '../src';
 
-const remoteMachine = createMachine({
-  id: 'remote',
-  initial: 'offline',
-  states: {
-    offline: {
-      on: {
-        WAKE: 'online',
-      },
-    },
-    online: {
-      on: {
-        WAKE: 'offline',
-      },
-    },
-  },
-});
+// const remoteMachine = createMachine({
+//   id: 'remote',
+//   initial: 'offline',
+//   states: {
+//     offline: {
+//       on: {
+//         WAKE: 'online',
+//       },
+//     },
+//     online: {
+//       on: {
+//         WAKE: 'offline',
+//       },
+//     },
+//   },
+// });
 
 export const context = {
   elapsed: 0,
   canWalk: false,
-  spawn: spawn(remoteMachine),
 };
 
 export type LightEvent =
@@ -64,7 +63,7 @@ export const lightMachine = createMachine<typeof context, LightEvent>(
               TIMER: {
                 target: 'stop',
                 cond: 'searchValid',
-                actions: ['inc', 'spawn'],
+                actions: ['inc'],
               },
             },
           },
@@ -77,7 +76,7 @@ export const lightMachine = createMachine<typeof context, LightEvent>(
           TIMER: {
             target: 'green',
             in: '#red_stop',
-            actions: ['inc', 'sendTo', 'setCannotSearch'],
+            actions: ['inc', 'setCannotSearch'],
           },
         },
       },
@@ -99,47 +98,37 @@ export const lightMachine = createMachine<typeof context, LightEvent>(
           return ++elapsed;
         },
       }),
-      spawn: assign({
-        spawn: () => spawn(remoteMachine),
-      }),
-      forwardTo: forwardTo(ctx => ctx.spawn!),
-      sendTo: send('WAKE', { to: ctx => ctx.spawn! }),
-    },
-    services: {
-      remote: () => spawn(remoteMachine),
     },
   }
 );
 
-describe('Async', () => {
-  generateAsyncMachineTest({
-    invite: 'Async',
-    machine: lightMachine,
-    events: ['TIMER', 'TIMER'],
-    values: ['red', 'red', 'green'],
-    initialState: { red: 'walk' },
-    initialContext: { canWalk: true, elapsed: 3 },
-  });
+generateAsyncMachineTest({
+  invite: 'Async',
+  machine: lightMachine,
+  events: ['TIMER', 'TIMER'],
+  values: ['red', 'red', 'green'],
+  initialState: { red: 'walk' },
+  initialContext: { canWalk: true, elapsed: 3 },
 });
 
-describe('Sync', () => {
-  generateSyncMachineTest({
-    machine: lightMachine,
-    events: ['TIMER', 'TIMER', 'TIMER', 'TIMER', 'TIMER', 'TIMER'],
-    values: ['idle', 'green', 'yellow', 'red', 'red', 'green', 'yellow'],
-    contexts: [
-      {
-        elapsed: 0,
-        canWalk: false,
-      },
-      {
-        elapsed: 1,
-        canWalk: false,
-      },
-      { elapsed: 2, canWalk: false },
-      { elapsed: 3, canWalk: true },
-      { elapsed: 4, canWalk: true },
-      { elapsed: 5, canWalk: false },
-    ],
-  });
+generateSyncMachineTest({
+  invite: 'Sync',
+
+  machine: lightMachine,
+  events: ['TIMER', 'TIMER', 'TIMER', 'TIMER', 'TIMER', 'TIMER'],
+  values: ['idle', 'green', 'yellow', 'red', 'red', 'green', 'yellow'],
+  contexts: [
+    {
+      elapsed: 0,
+      canWalk: false,
+    },
+    {
+      elapsed: 1,
+      canWalk: false,
+    },
+    { elapsed: 2, canWalk: false },
+    { elapsed: 3, canWalk: true },
+    { elapsed: 4, canWalk: true },
+    { elapsed: 5, canWalk: false },
+  ],
 });
