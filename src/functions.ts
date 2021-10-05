@@ -2,10 +2,12 @@ import { isSpawnedActor } from 'xstate/lib/Actor';
 
 export function withoutSpawnRef(arg?: any) {
   return arg
-    ? Object.values(arg).filter(
-        value => !isNullish(value) && !isSpawnedActor(value)
-      )
-    : [];
+    ? Object.entries(arg)
+        .filter(([_, value]) => !isNullish(value) && !isSpawnedActor(value))
+        .reduce((prev, [key, value]) => {
+          return Object.assign(prev, { [key]: value });
+        }, {})
+    : {};
 }
 
 export function sleep(millis: number) {
