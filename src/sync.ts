@@ -11,6 +11,10 @@ export function generateSyncMachineTest<TContext, TEvent extends EventObject>({
   values,
   subscribers = [],
   invite,
+  beforeAll: _beforeAll,
+  beforeEach: _beforeEach,
+  afterAll: _afterAll,
+  afterEach: _afterEach,
 }: GenerateSyncTestsForMachineArgs<TContext, TEvent>) {
   const _machine = machine.withContext({
     ...machine.initialState.context,
@@ -35,7 +39,9 @@ export function generateSyncMachineTest<TContext, TEvent extends EventObject>({
     }
   });
 
-  describe(invite, () => {
+  const tester = () => {
+    _beforeAll && beforeAll(_beforeAll.fn, _beforeAll.timeout);
+    _afterAll && afterAll(_afterAll.fn, _afterAll.timeout);
     for (let index = 0; index < values.length; index++) {
       const value = values[index];
       let state: State<TContext, TEvent>;
@@ -44,6 +50,8 @@ export function generateSyncMachineTest<TContext, TEvent extends EventObject>({
         send(event);
       };
       const _context = contexts[index];
+      _beforeEach && beforeAll(_beforeEach.fn, _beforeEach.timeout);
+      _afterEach && afterAll(_afterEach.fn, _afterEach.timeout);
       (() => {
         if (index === 0) {
           describe(`${nanoid()}___${value}`, () => {
@@ -79,5 +87,11 @@ export function generateSyncMachineTest<TContext, TEvent extends EventObject>({
         }
       })();
     }
-  });
+  };
+
+  invite
+    ? describe(invite, () => {
+        tester();
+      })
+    : tester();
 }

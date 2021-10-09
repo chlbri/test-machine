@@ -20,6 +20,10 @@ export async function generateAsyncMachineTest<
   values,
   timeout = 5000,
   subscribers = [],
+  beforeAll: _beforeAll,
+  beforeEach: _beforeEach,
+  afterAll: _afterAll,
+  afterEach: _afterEach,
 }: GenerateAsyncTestsForMachineArgs<TContext, TEvent>) {
   const _machine = machine.withContext({
     ...machine.initialState.context,
@@ -45,9 +49,14 @@ export async function generateAsyncMachineTest<
     });
   };
 
-  describe(invite, () => {
+  const tester = () => {
     beforeAll(sleeper);
+    _beforeAll && beforeAll(_beforeAll.fn, _beforeAll.timeout);
+    _afterAll && afterAll(_afterAll.fn, _afterAll.timeout);
+
     for (let index = 0; index < values.length; index++) {
+      _beforeEach && beforeAll(_beforeEach.fn, _beforeEach.timeout);
+      _afterEach && afterAll(_afterEach.fn, _afterEach.timeout);
       describe(`(${nanoid()}) ==> ${values[index]}`, () => {
         it('The state matches', () => {
           const value = values[index];
@@ -69,7 +78,13 @@ export async function generateAsyncMachineTest<
     it('The number of states shoulds be the same', () => {
       expect(states.length).toBe(values.length);
     });
-  });
+  };
+
+  invite
+    ? describe(invite, () => {
+        tester();
+      })
+    : tester();
 
   for (const event of events) {
     sleep(waiterBeforeEachEvent).then(() => {

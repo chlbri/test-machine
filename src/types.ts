@@ -47,8 +47,11 @@ export type GenerateSyncTestsForMachineArgs<
   contexts?: Nullish<SimpleContext<TContext>>[];
   values: string[];
   subscribers?: Subscriber<TContext, TEvent>[];
-    invite: string;
-
+  invite?: string;
+  beforeAll?:{fn: jest.ProvidesCallback, timeout?: number | undefined} 
+  afterAll?:{fn: jest.ProvidesCallback, timeout?: number | undefined} 
+  beforeEach?:{fn: jest.ProvidesCallback, timeout?: number | undefined} 
+  afterEach?:{fn: jest.ProvidesCallback, timeout?: number | undefined} 
 };
 
 export type SimpleContext<T> = {
