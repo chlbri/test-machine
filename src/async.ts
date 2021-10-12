@@ -70,7 +70,13 @@ export async function generateAsyncMachineTest<
             const state = states[index];
             const context = contexts[index];
             const _context = state.context;
-            expect(context).toStrictEqual(_context);
+            for (const key in context) {
+              if (Object.prototype.hasOwnProperty.call(context, key)) {
+                const element = context[key];
+                const _element = _context[key]
+                expect(element).toStrictEqual(_element);
+              }
+            }
           }, 2000);
         }
       });
