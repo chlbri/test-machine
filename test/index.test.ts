@@ -23,7 +23,7 @@ export const context = {
   canWalk: false,
 };
 
-export type LightEvent = { type: 'TIMER'; dete: string };
+export type LightEvent = { type: 'TIMER' };
 
 export const lightMachine = createMachine<typeof context, LightEvent>(
   {
