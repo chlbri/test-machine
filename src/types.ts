@@ -1,4 +1,4 @@
-import type { NExclude, Nullish } from 'core';
+import type { NExclude, Nullish } from '@core_chlbri/core';
 import {
   ActorRefFrom as XActorRefFrom,
   Event,

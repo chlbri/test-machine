@@ -2,6 +2,7 @@
   "version": "0.1.6",
   "license": "MIT",
   "main": "dist/index.js",
+  "name": "@core_chlbri/test-machine",
   "typings": "dist/index.d.ts",
   "engines": {
     "node": ">=12"
@@ -16,17 +17,16 @@
     "lint": "pnpm run prettier && pnpm run eslint -- --fix",
     "rm": "rimraf -rf node_modules",
     "rinit": "pnpm run rm && pnpm run pnpm",
-    "npm:publish": "pnpm rinit && publish && pnpm publish --access public",
+    "npm:publish": "pnpm run rinit && pnpm test && publish && git checkout main && pnpm publish --access public",
     "pnpm": "pnpm install",
     "upgrade": "pnpm upgrade",
     "git-push": "git push --follow-tags",
     "git-build-push": "pnpm install && pnpm build && pnpm run git-push",
     "git-publish": "pnpm run git-build-push && git checkout main && git merge dev && pnpm run git-push && git checkout dev"
   },
-  "name": "@core/test-machine",
   "author": "chlbri",
   "dependencies": {
-    "core": "github:chlbri/core",
+    "@core_chlbri/core": "^0.1.0",
     "jest": "^27.3.1",
     "nanoid": "^3.1.23",
     "ts-jest": "^27.0.7",

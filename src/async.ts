@@ -1,4 +1,4 @@
-import { sleep } from 'core';
+import { sleep } from '@core_chlbri/core';
 import { EventObject, interpret, State, StateSchema } from 'xstate';
 import {
   INVITE_CONTEXT,

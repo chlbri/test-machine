@@ -1,4 +1,4 @@
-import { isNullish } from 'core';
+import { isNullish } from '@core_chlbri/core';
 import { customAlphabet } from 'nanoid';
 import { isSpawnedActor } from 'xstate/lib/Actor';
 

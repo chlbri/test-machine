@@ -1,10 +1,10 @@
 lockfileVersion: 5.3
 
 specifiers:
+  '@core_chlbri/core': ^0.1.0
   '@types/jest': ^27.0.3
   '@typescript-eslint/eslint-plugin': ^4.25.0
   '@typescript-eslint/parser': ^4.25.0
-  core: github:chlbri/core
   eslint: 7.32.0
   jest: ^27.3.1
   nanoid: ^3.1.23
@@ -14,7 +14,7 @@ specifiers:
   xstate: ^4.25.0
 
 dependencies:
-  core: github.com/chlbri/core/568b9e98c03c551745cf71769c81b61bcfa2c943
+  '@core_chlbri/core': 0.1.0
   jest: 27.3.1
   nanoid: 3.1.30
   ts-jest: 27.0.7_7e2a439bb7b53c38ff0c1a3c5e04c2c5
@@ -373,6 +373,13 @@ packages:
 
   /@bcoe/v8-coverage/0.2.3:
     resolution: {integrity: sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==}
+    dev: false
+
+  /@core_chlbri/core/0.1.0:
+    resolution: {integrity: sha512-MbXFwfQBTHV6MoJbNnkzMfck8Oi8y+IU+i/okDAZxi9Jtf4h+ZhlJPvhvVLDDIU15oMmntCwE3bCE8LWIhGuZA==}
+    engines: {node: '>=12'}
+    dependencies:
+      nanoid: 3.1.30
     dev: false
 
   /@eslint/eslintrc/0.4.3:
@@ -3228,11 +3235,4 @@ packages:
       string-width: 4.2.3
       y18n: 5.0.8
       yargs-parser: 20.2.9
-    dev: false
-
-  github.com/chlbri/core/568b9e98c03c551745cf71769c81b61bcfa2c943:
-    resolution: {tarball: https://codeload.github.com/chlbri/core/tar.gz/568b9e98c03c551745cf71769c81b61bcfa2c943}
-    name: '@core/core'
-    version: 0.0.23
-    engines: {node: '>=12'}
     dev: false
