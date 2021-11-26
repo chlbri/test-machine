@@ -1,5 +1,5 @@
 {
-  "version": "0.1.6",
+  "version": "0.1.7",
   "license": "MIT",
   "main": "dist/index.js",
   "name": "@core_chlbri/test-machine",
@@ -19,6 +19,7 @@
     "rinit": "pnpm run rm && pnpm run pnpm",
     "npm:publish": "pnpm run rinit && pnpm test && publish && git checkout main && pnpm publish --access public",
     "pnpm": "pnpm install",
+    "upgrade:core": "pnpm upgrade @core_chlbri/core",
     "upgrade": "pnpm upgrade",
     "git-push": "git push --follow-tags",
     "git-build-push": "pnpm install && pnpm build && pnpm run git-push",
@@ -26,7 +27,7 @@
   },
   "author": "chlbri",
   "dependencies": {
-    "@core_chlbri/core": "^0.1.0",
+    "@core_chlbri/core": "^0.1.1-dc",
     "jest": "^27.3.1",
     "nanoid": "^3.1.23",
     "ts-jest": "^27.0.7",

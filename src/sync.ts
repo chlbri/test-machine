@@ -1,3 +1,4 @@
+import { dataCompare, log } from '@core_chlbri/core';
 import { EventObject, interpret, State, StateSchema } from 'xstate/lib';
 import {
   INVITE_CONTEXT,
@@ -84,8 +85,12 @@ export function generateSyncMachineTest<
         if (_context) {
           it(INVITE_CONTEXT, () => {
             const expected = _context;
-            const actual = state.context;
-            expect(actual).toStrictEqual(expected);
+            const received = state.context;
+            const assertion = dataCompare(received, expected);
+            log('received', received);
+            log('expected', expected);
+            log('assertion', assertion);
+            expect(assertion).toBe(true);
           });
         }
       });
