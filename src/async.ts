@@ -1,24 +1,28 @@
-import { nanoid } from 'nanoid';
-import { EventObject, interpret } from 'xstate';
-import { sleep } from './functions';
-import { GenerateAsyncTestsForMachineArgs } from './types';
+import { sleep } from 'core';
+import { EventObject, interpret, State, StateSchema } from 'xstate';
+import {
+  INVITE_CONTEXT,
+  INVITE_NUMBER_STATES,
+  INVITE_VALUE,
+} from './constants/strings';
+import { createInvite } from './functions';
+import type { GenerateAsyncTestsForMachineArgs } from './types';
 
 export * from './functions';
 export * from './types';
 
 export async function generateAsyncMachineTest<
   TContext,
-  TEvent extends EventObject
+  TEvent extends EventObject,
 >({
   initialContext,
   invite,
   initialState,
   machine,
   events,
-  waiterBeforeEachEvent = 0,
-  contexts = [] as any,
-  values,
-  timeout = 5000,
+  waiterBeforeEachEvent = 10,
+  tests,
+  timeout = 2000,
   subscribers = [],
   beforeAll: _beforeAll,
   beforeEach: _beforeEach,
@@ -29,6 +33,8 @@ export async function generateAsyncMachineTest<
     ...machine.initialState.context,
     ...initialContext,
   });
+
+  const _invites = createInvite(tests.map(test => test.value));
 
   const service = interpret(_machine).start(initialState);
 
@@ -42,55 +48,64 @@ export async function generateAsyncMachineTest<
     if (state.changed) states.push(state);
   });
 
-  const sleeper = () => {
+  // jest.setTimeout(timeout);
+
+  const sleeper = async () => {
     return sleep(timeout).finally(() => {
       obs.unsubscribe();
       service.stop();
     });
   };
 
+  states.map(state => state.value); //?
+
   const tester = () => {
-    beforeAll(sleeper);
+    beforeAll(sleeper, timeout + 1000);
     _beforeAll && beforeAll(_beforeAll.fn, _beforeAll.timeout);
     _afterAll && afterAll(_afterAll.fn, _afterAll.timeout);
 
-    for (let index = 0; index < values.length; index++) {
-      _beforeEach && beforeAll(_beforeEach.fn, _beforeEach.timeout);
-      _afterEach && afterAll(_afterEach.fn, _afterEach.timeout);
-      describe(`(${nanoid()}) ==> ${values[index]}`, () => {
-        it('The state matches', () => {
-          const value = values[index];
-          const state = states[index];
+    for (let index = 0; index < tests.length; index++) {
+      const _invite = _invites[index];
+      const test = tests[index];
+      const value = test.value;
+      const _context = test.context;
+      let state: State<
+        TContext,
+        TEvent,
+        StateSchema<any>,
+        {
+          value: any;
+          context: TContext;
+        }
+      >;
+      describe(_invite, () => {
+        _beforeEach && beforeAll(_beforeEach.fn, _beforeEach.timeout);
+        _afterEach && afterAll(_afterEach.fn, _afterEach.timeout);
+        beforeAll(() => {
+          state = states[index];
+        });
+        it(INVITE_VALUE, () => {
           expect(value).toBeDefined();
           expect(state).toBeDefined();
           expect(state.matches(value)).toBe(true);
-        }, 2000);
-        if (contexts[index]) {
-          it('The context matches', () => {
-            const state = states[index];
-            const context = contexts[index];
-            const _context = state.context;
-            for (const key in context) {
-              if (Object.prototype.hasOwnProperty.call(context, key)) {
-                const element = context[key];
-                const _element = _context[key]
-                expect(element).toStrictEqual(_element);
-              }
-            }
-          }, 2000);
+        });
+        if (_context) {
+          it(INVITE_CONTEXT, () => {
+            const expected = _context;
+            const actual = state.context;
+            expect(actual).toStrictEqual(expected);
+          });
         }
       });
     }
-    it('The number of states shoulds be the same', () => {
-      expect(states.length).toBe(values.length);
+    it(INVITE_NUMBER_STATES, () => {
+      expect(states.length).toBe(tests.length);
     });
   };
 
-  invite
-    ? describe(invite, () => {
-        tester();
-      })
-    : tester();
+  describe(invite, () => {
+    tester();
+  });
 
   for (const event of events) {
     sleep(waiterBeforeEachEvent).then(() => {

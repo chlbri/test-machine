@@ -23,9 +23,7 @@ export const context = {
   canWalk: false,
 };
 
-export type LightEvent =
-  | { type: 'TIMER'; dete: string }
-  | { type: 'NEXT'; minQueryLength: number };
+export type LightEvent = { type: 'TIMER'; dete: string };
 
 export const lightMachine = createMachine<typeof context, LightEvent>(
   {
@@ -34,41 +32,37 @@ export const lightMachine = createMachine<typeof context, LightEvent>(
     states: {
       idle: {
         on: {
-          TIMER: {
-            target: 'green',
-            actions: 'inc',
-          },
+          TIMER: 'green',
         },
       },
       green: {
+        entry: 'inc',
         on: {
-          TIMER: {
-            target: 'yellow',
-            actions: 'inc',
-          },
+          TIMER: 'yellow',
         },
       },
       yellow: {
+        entry: 'inc',
         on: {
-          TIMER: { target: 'red', actions: 'inc' },
+          TIMER: 'red',
         },
       },
       red: {
+        entry: 'setCanWalk',
         initial: 'walk',
         states: {
           walk: {
-            entry: 'setCanSearch',
-
+            entry: 'inc',
             on: {
               TIMER: {
                 target: 'stop',
                 cond: 'searchValid',
-                actions: ['inc'],
               },
             },
           },
 
           stop: {
+            entry: 'inc',
             id: 'red_stop',
           },
         },
@@ -76,7 +70,7 @@ export const lightMachine = createMachine<typeof context, LightEvent>(
           TIMER: {
             target: 'green',
             in: '#red_stop',
-            actions: ['inc', 'setCannotSearch'],
+            actions: 'setCannotWalk',
           },
         },
       },
@@ -87,11 +81,11 @@ export const lightMachine = createMachine<typeof context, LightEvent>(
       searchValid: ({ canWalk }) => canWalk,
     },
     actions: {
-      setCanSearch: assign({
-        canWalk: _ => true,
+      setCanWalk: assign({
+        canWalk: (_) => true,
       }),
-      setCannotSearch: assign({
-        canWalk: _ => false,
+      setCannotWalk: assign({
+        canWalk: (_) => false,
       }),
       inc: assign({
         elapsed: ({ elapsed }) => {
@@ -106,29 +100,61 @@ generateAsyncMachineTest({
   invite: 'Async',
   machine: lightMachine,
   events: ['TIMER', 'TIMER'],
-  values: ['red', 'red', 'green'],
+  tests: [
+    {
+      value: 'red',
+      context: { canWalk: true, elapsed: 3 },
+    },
+    {
+      value: 'red',
+      context: { canWalk: true, elapsed: 4 },
+    },
+    {
+      value: 'green',
+    },
+  ],
   initialState: { red: 'walk' },
   initialContext: { canWalk: true, elapsed: 3 },
+  timeout: 1000,
 });
 
 generateSyncMachineTest({
   invite: 'Sync',
-
   machine: lightMachine,
   events: ['TIMER', 'TIMER', 'TIMER', 'TIMER', 'TIMER', 'TIMER'],
-  values: ['idle', 'green', 'yellow', 'red', 'red', 'green', 'yellow'],
-  contexts: [
+  tests: [
     {
-      elapsed: 0,
-      canWalk: false,
+      value: 'idle',
+      context: {
+        elapsed: 0,
+        canWalk: false,
+      },
     },
     {
-      elapsed: 1,
-      canWalk: false,
+      value: 'green',
+      context: {
+        elapsed: 1,
+        canWalk: false,
+      },
     },
-    { elapsed: 2, canWalk: false },
-    { elapsed: 3, canWalk: true },
-    { elapsed: 4, canWalk: true },
-    { elapsed: 5, canWalk: false },
+    {
+      value: 'yellow',
+      context: { elapsed: 2, canWalk: false },
+    },
+    {
+      value: 'red',
+      context: { elapsed: 3, canWalk: true },
+    },
+    {
+      value: 'red',
+      context: { elapsed: 4, canWalk: true },
+    },
+    {
+      value: 'green',
+      context: { elapsed: 5, canWalk: false },
+    },
+    {
+      value: 'yellow',
+    },
   ],
 });

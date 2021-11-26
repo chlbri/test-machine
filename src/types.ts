@@ -1,3 +1,4 @@
+import type { NExclude, Nullish } from 'core';
 import {
   ActorRefFrom as XActorRefFrom,
   Event,
@@ -5,10 +6,10 @@ import {
   State as MachineState,
   StateMachine as XStateMachine,
   StateSchema,
-  StateValue
-} from "xstate";
+  StateValue,
+} from 'xstate';
 
-export type Nullish<T = unknown> = T | null | undefined;
+export type Undefiny<T = unknown> = NExclude<Nullish<T>, null>;
 
 type StateMachine<
   TContext = any,
@@ -35,6 +36,10 @@ export type Subscriber<TContext, TEvent extends EventObject> = (
   >
 ) => void | undefined;
 
+export type Test<TContext> = {
+  value: string;
+  context?: SimpleContext<TContext>;
+};
 
 export type GenerateSyncTestsForMachineArgs<
   TContext,
@@ -44,14 +49,15 @@ export type GenerateSyncTestsForMachineArgs<
   initialState?: StateValue;
   machine: StateMachine<TContext, TEvent>;
   events: Event<TEvent>[];
-  contexts?: Nullish<SimpleContext<TContext>>[];
-  values: string[];
+  tests:Test<TContext>[];
+  // contexts?: Nullish<SimpleContext<TContext>>[];
+  // values: string[];
   subscribers?: Subscriber<TContext, TEvent>[];
-  invite?: string;
-  beforeAll?:{fn: jest.ProvidesCallback, timeout?: number | undefined} 
-  afterAll?:{fn: jest.ProvidesCallback, timeout?: number | undefined} 
-  beforeEach?:{fn: jest.ProvidesCallback, timeout?: number | undefined} 
-  afterEach?:{fn: jest.ProvidesCallback, timeout?: number | undefined} 
+  invite: string;
+  beforeAll?: { fn: jest.ProvidesCallback; timeout?: number };
+  afterAll?: { fn: jest.ProvidesCallback; timeout?: number };
+  beforeEach?: { fn: jest.ProvidesCallback; timeout?: number };
+  afterEach?: { fn: jest.ProvidesCallback; timeout?: number };
 };
 
 export type SimpleContext<T> = {

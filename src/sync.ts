@@ -1,14 +1,21 @@
-import { nanoid } from 'nanoid';
-import { EventObject, interpret, State } from 'xstate/lib';
-import { GenerateSyncTestsForMachineArgs } from './types';
+import { EventObject, interpret, State, StateSchema } from 'xstate/lib';
+import {
+  INVITE_CONTEXT,
+  INVITE_NUMBER_STATES,
+  INVITE_VALUE,
+} from './constants/strings';
+import { createInvite } from './functions';
+import type { GenerateSyncTestsForMachineArgs } from './types';
 
-export function generateSyncMachineTest<TContext, TEvent extends EventObject>({
+export function generateSyncMachineTest<
+  TContext,
+  TEvent extends EventObject,
+>({
   initialContext,
   initialState,
   machine,
   events,
-  contexts = [] as any,
-  values,
+  tests,
   subscribers = [],
   invite,
   beforeAll: _beforeAll,
@@ -16,6 +23,9 @@ export function generateSyncMachineTest<TContext, TEvent extends EventObject>({
   afterAll: _afterAll,
   afterEach: _afterEach,
 }: GenerateSyncTestsForMachineArgs<TContext, TEvent>) {
+  if (!tests || !tests.length) {
+    return;
+  }
   const _machine = machine.withContext({
     ...machine.initialState.context,
     ...initialContext,
@@ -28,70 +38,63 @@ export function generateSyncMachineTest<TContext, TEvent extends EventObject>({
     subscribe(sub);
   });
 
-  const machineStates: State<TContext, TEvent>[] = [];
+  const states = [service.state];
 
-  service.subscribe(state => {
-    const matcher = state.value === initialState || state.value === 'idle';
-    if (matcher || state.changed) {
-      machineStates.push(state);
-    } else {
-      state;
-    }
+  const obs = service.subscribe(state => {
+    if (state.changed) states.push(state);
   });
 
+  const _invites = createInvite(tests.map(test => test.value));
+
   const tester = () => {
+    afterAll(() => {
+      obs.unsubscribe();
+      service.stop();
+    });
     _beforeAll && beforeAll(_beforeAll.fn, _beforeAll.timeout);
     _afterAll && afterAll(_afterAll.fn, _afterAll.timeout);
-    for (let index = 0; index < values.length; index++) {
-      const value = values[index];
-      let state: State<TContext, TEvent>;
-      const event = events[index - 1];
+    for (let index = 0; index < tests.length; index++) {
+      const _invite = _invites[index];
+      const test = tests[index];
+      const value = test.value;
+      const _context = test.context;
+      let state: State<
+        TContext,
+        TEvent,
+        StateSchema<any>,
+        { value: any; context: TContext }
+      >;
       const sender = () => {
-        send(event);
+        if (index > 0) {
+          const event = events[index - 1];
+          send(event);
+        }
+        state = states[index];
       };
-      const _context = contexts[index];
-      _beforeEach && beforeAll(_beforeEach.fn, _beforeEach.timeout);
-      _afterEach && afterAll(_afterEach.fn, _afterEach.timeout);
-      (() => {
-        if (index === 0) {
-          describe(`${nanoid()}___${value}`, () => {
-            state = machineStates[index];
-            it(`for "${value}"`, () => {
-              expect(state.matches(value)).toBeTruthy();
-            });
-            if (_context) {
-              it('Context is the same', () => {
-                const expected = _context;
-                const actual = service.state.context;
 
-                expect(actual).toStrictEqual(expected);
-              });
-            }
-          });
-        } else {
-          describe(nanoid(), () => {
-            beforeAll(sender);
-            it(`Value is the ${value}`, async () => {
-              state = machineStates[index];
-              expect(state.matches(value)).toBeTruthy();
-            });
-            if (_context) {
-              it('Context is the same', () => {
-                const expected = _context;
-                const actual = service.state.context;
-
-                expect(actual).toStrictEqual(expected);
-              });
-            }
+      describe(_invite, () => {
+        beforeAll(sender);
+        _beforeEach && beforeAll(_beforeEach.fn, _beforeEach.timeout);
+        _afterEach && afterAll(_afterEach.fn, _afterEach.timeout);
+        it(INVITE_VALUE, async () => {
+          expect(value).toBeDefined();
+          expect(state).toBeDefined();
+          expect(state.matches(value)).toBeTruthy();
+        });
+        if (_context) {
+          it(INVITE_CONTEXT, () => {
+            const expected = _context;
+            const actual = state.context;
+            expect(actual).toStrictEqual(expected);
           });
         }
-      })();
+      });
     }
+    it(INVITE_NUMBER_STATES, () => {
+      expect(states.length).toBe(tests.length);
+    });
   };
-
-  invite
-    ? describe(invite, () => {
-        tester();
-      })
-    : tester();
+  describe(invite, () => {
+    tester();
+  });
 }
