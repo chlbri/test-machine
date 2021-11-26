@@ -1,3 +1,6 @@
+# THE LIBRARY WILL BE RENAMED @core/test-machine, this package will be archived in 6 months please switch
+
+
 # For testing xstate machines
 
 The package helps to run test for Observable Xstate machine
