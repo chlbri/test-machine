@@ -16,7 +16,7 @@
     "lint": "pnpm run prettier && pnpm run eslint -- --fix",
     "rm": "rimraf -rf node_modules",
     "rinit": "pnpm run rm && pnpm run pnpm",
-    "npm:publish": "pnpm rinit && pnpm build && publish && pnpm publish",
+    "npm:publish": "pnpm rinit && publish && pnpm publish --access public",
     "pnpm": "pnpm install",
     "upgrade": "pnpm upgrade",
     "git-push": "git push --follow-tags",
