@@ -12,23 +12,38 @@ const REMOVE_COMMAND = 'rimraf -rf dist src test';
 const CLEAN_COMMAND = 'git clean -fd & git checkout -- .';
 const PACKAGE = './package.json';
 
+function resetToMain(data: any) {
+  let _data = '';
+  if (typeof data !== 'string') return _data;
+  if (data.startsWith('dist/')) {
+    _data = data.slice(5);
+  }
+  return _data;
+}
+
 function main() {
   exec(COPY_COMMAND);
   exec(REMOVE_COMMAND);
-  // #region package.json
   const file = editjson(PACKAGE);
+
+  // #region my own
   file.unset('devDependencies');
   file.unset('scripts');
+  // #endregion
+
+  // #region Config
   const versions = (file.get('version') as string).split('.');
-  const versionN = Number.parseInt(versions[versions.length - 1]) + 1;
-  versions.pop();
+  const versionN = Number.parseInt(versions.pop()) + 1;
   versions.push(versionN + '');
+  const typings = resetToMain(file.get('typings'));
+  file.set('typings', typings);
+  const _main = resetToMain(file.get('main'));
+  file.set('main', _main);
   const version = versions.join('.');
   file.set('version', version);
-  file.save();
-  const out = exec(CLEAN_COMMAND).stdout;
-  log('out', '=>', out);
   // #endregion
+
+  file.save();
 }
 
 main();
