@@ -19,7 +19,7 @@
     "rinit": "pnpm run rm && pnpm run pnpm",
     "npm:prepublish": "ts-node ./wconfig/__pack.ts",
     "postpublish": "git clean -fd && git checkout -- .",
-    "npm:publish": "pnpm run rinit && pnpm test && publish && git checkout main && pnpm npm:prepublish && pnpm publish --access public",
+    "npm:publish": "pnpm run rinit && pnpm test && publish && git checkout main && pnpm npm:prepublish && pnpm publish --access public --no-git-checks",
     "pnpm": "pnpm install",
     "upgrade:core": "pnpm upgrade @core_chlbri/core",
     "upgrade": "pnpm upgrade",
