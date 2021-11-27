@@ -5,11 +5,11 @@ import { exec } from 'shelljs';
 // This file is used by build system to build a clean npm package with the compiled js files in the root of the package.
 // It will not be included in the npm package.
 
-const CLEAN_COMMAND = 'git clean -fd & git checkout -- .';
+const CLEAN_COMMAND = 'git clean -fd && git checkout -- .';
 const PACKAGE = './package.json';
 
 function main() {
-  exec(CLEAN_COMMAND);
+  const lloog = exec(CLEAN_COMMAND).stdout;
 
   // #region Config
   const file = editjson(PACKAGE);
@@ -23,6 +23,8 @@ function main() {
   // #endregion
 
   file.save();
+
+  console.log(lloog);
 }
 
 main();

@@ -1,7 +1,5 @@
-import fs from 'fs';
-import { exec } from 'shelljs';
 import editjson from 'edit-json-file';
-import { log } from 'console';
+import { exec } from 'shelljs';
 
 // DO NOT DELETE THIS FILE
 // This file is used by build system to build a clean npm package with the compiled js files in the root of the package.
@@ -9,7 +7,6 @@ import { log } from 'console';
 
 const COPY_COMMAND = 'xcopy "dist" .';
 const REMOVE_COMMAND = 'rimraf -rf dist src test';
-const CLEAN_COMMAND = 'git clean -fd & git checkout -- .';
 const PACKAGE = './package.json';
 
 function resetToMain(data: any) {
