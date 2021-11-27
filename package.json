@@ -1,5 +1,5 @@
 {
-  "version": "0.1.712",
+  "version": "0.1.713",
   "license": "MIT",
   "name": "@core_chlbri/test-machine",
   "main": "index.js",
@@ -8,8 +8,7 @@
     "node": ">=12"
   },
   "files": [
-    "dist",
-    "src"
+    "dist/"
   ],
   "scripts": {
     "tsc": "tsc",
