@@ -1,5 +1,5 @@
 {
-  "version": "0.1.711",
+  "version": "0.1.712",
   "license": "MIT",
   "name": "@core_chlbri/test-machine",
   "main": "index.js",
@@ -7,6 +7,10 @@
   "engines": {
     "node": ">=12"
   },
+  "files": [
+    "dist",
+    "src"
+  ],
   "scripts": {
     "tsc": "tsc",
     "build": "pnpm run test && pnpm run tsc && pnpm run lint",
