@@ -18,8 +18,10 @@ function main() {
   file.unset('devDependencies');
   file.unset('scripts');
   const versions = (file.get('version') as string).split('.');
-  const version = Number.parseInt(versions[versions.length - 1]) + 1;
-
+  const versionN = Number.parseInt(versions[versions.length - 1]) + 1;
+  versions.pop();
+  versions.push(versionN + '');
+  const version = versions.join('.');
   file.set('version', version);
   file.save();
   const out = exec(CLEAN_COMMAND).stdout;
