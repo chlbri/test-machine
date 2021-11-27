@@ -8,7 +8,7 @@ import { log } from 'console';
 // It will not be included in the npm package.
 
 const COPY_COMMAND = 'xcopy "dist" .';
-const CLEAN_COMMAND = 'git clean -fd';
+const CLEAN_COMMAND = 'git clean -fd & git checkout -- .';
 const PACKAGE = './package.json';
 
 function main() {
