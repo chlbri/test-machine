@@ -1,5 +1,5 @@
 {
-  "version": "0.1.728",
+  "version": "0.1.729",
   "license": "MIT",
   "name": "@core_chlbri/test-machine",
   "main": "dist/index.js",

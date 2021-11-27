@@ -10,7 +10,7 @@ const CLEAN_COMMAND2 = 'git add . && git commit -am "clean"';
 const PACKAGE = './package.json';
 
 function main() {
-  exec(CLEAN_COMMAND1).stdout;
+  exec(CLEAN_COMMAND1);
 
   // #region Config
   const file = editjson(PACKAGE);
@@ -24,6 +24,7 @@ function main() {
   // #endregion
 
   file.save();
+  exec(CLEAN_COMMAND2);
 }
 
 main();
