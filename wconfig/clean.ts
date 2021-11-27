@@ -9,7 +9,7 @@ const CLEAN_COMMAND = 'git clean -fd && git checkout -- .';
 const PACKAGE = './package.json';
 
 function main() {
-  const lloog = exec(CLEAN_COMMAND).stdout;
+  exec(CLEAN_COMMAND).stdout;
 
   // #region Config
   const file = editjson(PACKAGE);
@@ -23,8 +23,6 @@ function main() {
   // #endregion
 
   file.save();
-
-  console.log(lloog);
 }
 
 main();
