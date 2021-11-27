@@ -1,5 +1,5 @@
 {
-  "version": "0.1.713",
+  "version": "0.1.714",
   "license": "MIT",
   "name": "@core_chlbri/test-machine",
   "main": "index.js",
@@ -8,7 +8,10 @@
     "node": ">=12"
   },
   "files": [
-    "dist/"
+    "dist/*.js",
+    "dist/**/&.js",
+    "dist/*.d.ts",
+    "dist/**/&.d.ts"
   ],
   "scripts": {
     "tsc": "tsc",
@@ -20,7 +23,7 @@
     "lint": "pnpm run prettier && pnpm run eslint -- --fix",
     "rm": "rimraf -rf node_modules",
     "rinit": "pnpm run rm && pnpm run pnpm",
-    "npm:publish": "pnpm run rinit && pnpm test && publish && git checkout main && pnpm publish --access public",
+    "npm:publish": "publish && git checkout main && pnpm publish --access public",
     "pnpm": "pnpm install",
     "upgrade:core": "pnpm upgrade @core_chlbri/core",
     "upgrade": "pnpm upgrade",
