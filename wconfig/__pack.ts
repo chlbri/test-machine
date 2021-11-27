@@ -33,7 +33,7 @@ function main() {
 
   // #region Config
   const versions = (file.get('version') as string).split('.');
-  const versionN = Number.parseInt(versions.pop()) + 1;
+  const versionN = Number.parseInt(versions.pop()!) + 1;
   versions.push(versionN + '');
   const typings = resetToMain(file.get('typings'));
   file.set('typings', typings);
