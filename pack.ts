@@ -8,11 +8,13 @@ import { log } from 'console';
 // It will not be included in the npm package.
 
 const COPY_COMMAND = 'xcopy "dist" .';
+const REMOVE_COMMAND = 'rimraf -rf dist src test';
 const CLEAN_COMMAND = 'git clean -fd & git checkout -- .';
 const PACKAGE = './package.json';
 
 function main() {
   exec(COPY_COMMAND);
+  exec(REMOVE_COMMAND);
   // #region package.json
   const file = editjson(PACKAGE);
   file.unset('devDependencies');
