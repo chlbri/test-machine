@@ -18,15 +18,15 @@
     "rm": "rimraf -rf node_modules",
     "rinit": "pnpm run rm && pnpm run pnpm",
     "npm:prepublish": "ts-node ./wconfig/__pack.ts",
-    "postpublish": "git clean -fd && git checkout -- .",
-    "npm:publish": "pnpm run rinit && pnpm test && publish && git checkout main && pnpm npm:prepublish && pnpm publish --access public --no-git-checks",
+    "npm:postpublish": "git clean -fd && git checkout -- .",
+    "npm:publish": "pnpm git-publish && git checkout main && pnpm npm:prepublish && pnpm publish --access public --no-git-checks && npm:postpublish",
     "pnpm": "pnpm install",
     "upgrade:core": "pnpm upgrade @core_chlbri/core",
     "upgrade": "pnpm upgrade",
     "git-push": "git push --follow-tags",
     "git-build-push": "pnpm install && pnpm build && pnpm run git-push",
     "cp": "xcopy \"wallaby.js\" \"./wallaby/wallaby.js\"",
-    "git-publish": "pnpm run git-build-push && git checkout main && git merge dev && pnpm run git-push && git checkout dev"
+    "git-publish": "pnpm run rinit && pnpm test && publish"
   },
   "author": "chlbri",
   "dependencies": {
