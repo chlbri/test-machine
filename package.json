@@ -1,18 +1,12 @@
 {
-  "version": "0.1.714",
+  "version": "0.1.715",
   "license": "MIT",
   "name": "@core_chlbri/test-machine",
-  "main": "index.js",
-  "typings": "index.d.ts",
+  "main": "dist/index.js",
+  "typings": "dist/index.d.ts",
   "engines": {
     "node": ">=12"
   },
-  "files": [
-    "dist/*.js",
-    "dist/**/&.js",
-    "dist/*.d.ts",
-    "dist/**/&.d.ts"
-  ],
   "scripts": {
     "tsc": "tsc",
     "build": "pnpm run test && pnpm run tsc && pnpm run lint",
@@ -23,12 +17,15 @@
     "lint": "pnpm run prettier && pnpm run eslint -- --fix",
     "rm": "rimraf -rf node_modules",
     "rinit": "pnpm run rm && pnpm run pnpm",
-    "npm:publish": "publish && git checkout main && pnpm publish --access public",
+    "prepublishOnly": "",
+    "postpublish": "git clean -fd",
+    "npm:publish": "pnpm run rinit && pnpm test && publish && git checkout main && pnpm publish --access public",
     "pnpm": "pnpm install",
     "upgrade:core": "pnpm upgrade @core_chlbri/core",
     "upgrade": "pnpm upgrade",
     "git-push": "git push --follow-tags",
     "git-build-push": "pnpm install && pnpm build && pnpm run git-push",
+    "cp": "xcopy \"wallaby.js\" \"./wallaby/wallaby.js\"",
     "git-publish": "pnpm run git-build-push && git checkout main && git merge dev && pnpm run git-push && git checkout dev"
   },
   "author": "chlbri",
@@ -40,11 +37,15 @@
     "xstate": "^4.25.0"
   },
   "devDependencies": {
+    "@types/edit-json-file": "^1.6.1",
     "@types/jest": "^27.0.3",
+    "@types/shelljs": "^0.8.9",
     "@typescript-eslint/eslint-plugin": "^4.25.0",
     "@typescript-eslint/parser": "^4.25.0",
+    "edit-json-file": "^1.6.2",
     "eslint": "7.32.0",
     "prettier": "^2.5.0",
+    "shelljs": "^0.8.4",
     "typescript": "^4.5.2"
   }
 }

@@ -1,0 +1,30 @@
+import fs from 'fs';
+import { exec } from 'shelljs';
+import editjson from 'edit-json-file';
+import { log } from 'console';
+
+// DO NOT DELETE THIS FILE
+// This file is used by build system to build a clean npm package with the compiled js files in the root of the package.
+// It will not be included in the npm package.
+
+const COPY_COMMAND = 'xcopy "dist" .';
+const CLEAN_COMMAND = 'git clean -fd';
+const PACKAGE = './package.json';
+
+function main() {
+  exec(COPY_COMMAND);
+  // #region package.json
+  const file = editjson(PACKAGE);
+  file.unset('devDependencies');
+  file.unset('scripts');
+  const versions = (file.get('version') as string).split('.');
+  const version = Number.parseInt(versions[versions.length - 1]) + 1;
+
+  file.set('version', version);
+  file.save();
+  const out = exec(CLEAN_COMMAND).stdout;
+  log('out', '=>', out);
+  // #endregion
+}
+
+main();
