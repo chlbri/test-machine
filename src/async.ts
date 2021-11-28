@@ -28,7 +28,7 @@ export async function generateAsyncMachineTest<
   beforeEach: _beforeEach,
   afterAll: _afterAll,
   afterEach: _afterEach,
-}: GenerateAsyncTestsForMachineArgs<TContext, TEvent>) {
+}: GenerateAsyncTestsForMachineArgs<TContext, TEvent>): Promise<void> {
   const _machine = machine.withContext({
     ...machine.initialState.context,
     ...initialContext,
@@ -107,13 +107,12 @@ export async function generateAsyncMachineTest<
     });
   };
 
-  describe(invite, () => {
-    tester();
-  });
-
   for (const event of events) {
     sleep(waiterBeforeEachEvent).then(() => {
       if (service.status < 2) service.send(event);
     });
   }
+  return describe(invite, () => {
+    tester();
+  });
 }

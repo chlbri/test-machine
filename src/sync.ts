@@ -23,7 +23,7 @@ export function generateSyncMachineTest<
   beforeEach: _beforeEach,
   afterAll: _afterAll,
   afterEach: _afterEach,
-}: GenerateSyncTestsForMachineArgs<TContext, TEvent>) {
+}: GenerateSyncTestsForMachineArgs<TContext, TEvent>): void {
   if (!tests || !tests.length) {
     return;
   }
@@ -99,7 +99,7 @@ export function generateSyncMachineTest<
       expect(states.length).toBe(tests.length);
     });
   };
-  describe(invite, () => {
+  return describe(invite, () => {
     tester();
   });
 }

@@ -70,7 +70,7 @@ function generateSyncMachineTest({ initialContext, initialState, machine, events
             expect(states.length).toBe(tests.length);
         });
     };
-    describe(invite, () => {
+    return describe(invite, () => {
         tester();
     });
 }
