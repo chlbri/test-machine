@@ -78,14 +78,12 @@ async function generateAsyncMachineTest({ initialContext, invite, initialState, 
             expect(states.length).toBe(tests.length);
         });
     };
+    describe(invite, tester);
     for (const event of events) {
         (0, core_1.sleep)(waiterBeforeEachEvent).then(() => {
             if (service.status < 2)
                 service.send(event);
         });
     }
-    return describe(invite, () => {
-        tester();
-    });
 }
 exports.generateAsyncMachineTest = generateAsyncMachineTest;

@@ -99,7 +99,6 @@ export function generateSyncMachineTest<
       expect(states.length).toBe(tests.length);
     });
   };
-  return describe(invite, () => {
-    tester();
-  });
+
+  describe(invite, tester);
 }

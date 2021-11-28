@@ -107,12 +107,11 @@ export async function generateAsyncMachineTest<
     });
   };
 
+  describe(invite, tester);
+
   for (const event of events) {
     sleep(waiterBeforeEachEvent).then(() => {
       if (service.status < 2) service.send(event);
     });
   }
-  return describe(invite, () => {
-    tester();
-  });
 }
