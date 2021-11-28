@@ -1,5 +1,5 @@
 {
-  "version": "0.1.736",
+  "version": "0.1.737",
   "license": "MIT",
   "name": "@core_chlbri/test-machine",
   "main": "dist/index.js",
@@ -17,7 +17,7 @@
     "lint": "pnpm prettier && pnpm eslint -- --fix",
     "rinit": "ts-node \"./wconfig/rinit.ts\" & pnpm pnpm:install",
     "npm:prepublish": "ts-node \"./wconfig/pack.ts\" && pnpm install",
-    "npm:publish": "git checkout main && pnpm npm:prepublish && pnpm publish --access public --no-git-checks && git clean -fd && git checkout -- . && pnpm:install && ts-node \"./wconfig/clean.ts\"",
+    "npm:publish": "git checkout main && pnpm npm:prepublish && pnpm publish --access public --no-git-checks && git clean -fd && git checkout -- . && pnpm pnpm:install && ts-node \"./wconfig/clean.ts\"",
     "pnpm:install": "pnpm install",
     "publish:all": "pnpm git-publish && pnpm npm:publish",
     "upgrade:core": "pnpm upgrade @core_chlbri/core",
