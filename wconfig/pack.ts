@@ -5,7 +5,7 @@ import { exec } from 'shelljs';
 // This file is used by build system to build a clean npm package with the compiled js files in the root of the package.
 // It will not be included in the npm package.
 
-const COPY_COMMAND = 'xcopy "dist" .';
+const COPY_COMMAND = 'xcopy /shi dist .';
 const REMOVE_COMMAND = 'rimraf -rf dist src test';
 const PACKAGE = './package.json';
 
