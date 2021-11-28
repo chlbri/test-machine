@@ -6,7 +6,7 @@ import { exec } from 'shelljs';
 // It will not be included in the npm package.
 
 const COPY_COMMAND = 'xcopy /shi dist .';
-const REMOVE_COMMAND = 'rimraf -rf dist src test';
+// const REMOVE_COMMAND = 'rimraf -rf dist src test';
 const PACKAGE = './package.json';
 
 function resetToMain(data: any) {
@@ -20,7 +20,7 @@ function resetToMain(data: any) {
 
 function main() {
   exec(COPY_COMMAND);
-  exec(REMOVE_COMMAND);
+  // exec(REMOVE_COMMAND);
   const file = editjson(PACKAGE);
 
   // #region my own

@@ -2,4 +2,8 @@
 node_modules
 publish
 dist
-publish_npm
+.eslintignore
+.eslintrc.yml
+.gitignore
+.gitpod.yml
+.pnpm
