@@ -15,7 +15,7 @@
     "prettier": "prettier --write \"src/**/*.{ts,tsx}\"",
     "eslint": "eslint \"{src/**/*,App}.{ts,tsx,yml,json}\"",
     "lint": "pnpm prettier && pnpm eslint -- --fix",
-    "rinit": "rimraf -rf node_modules && pnpm install",
+    "rinit": "del /f/s/q node_modules 1>__null__ && del __null__ && pnpm install",
     "npm:prepublish": "ts-node \"./wconfig/pack.ts\"",
     "npm:publish": "git checkout main && pnpm npm:prepublish && pnpm publish --access public --no-git-checks && ts-node \"./wconfig/clean.ts\"",
     "publish:all": "pnpm git-publish && pnpm npm:publish",
