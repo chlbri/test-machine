@@ -19,11 +19,11 @@
     "npm:prepublish": "ts-node \"./wconfig/pack.ts\" && pnpm install",
     "npm:publish": "git checkout main && pnpm npm:prepublish && pnpm publish --access public --no-git-checks && git clean -fd && git checkout -- . && pnpm pnpm:install && ts-node \"./wconfig/clean.ts\"",
     "pnpm:install": "pnpm install",
-    "publish:all": "pnpm git-publish && pnpm npm:publish",
+    "publish:all": "pnpm run rinit && pnpm git-publish && pnpm npm:publish",
     "upgrade:core": "pnpm upgrade @core_chlbri/core",
     "upgrade": "pnpm upgrade",
     "git-push": "git push --follow-tags",
-    "git-publish": "pnpm run rinit && pnpm build && publish"
+    "git-publish": "pnpm build && publish"
   },
   "author": "chlbri",
   "dependencies": {
