@@ -5,7 +5,7 @@ module.exports = function () {
   return {
     autoDetect: true,
     teardown() {
-      return require('shelljs').exec('pnpm clear:test');
+      return require('shelljs').exec('yarn clear:test');
     },
     runMode: 'onsave',
     trace: true,
