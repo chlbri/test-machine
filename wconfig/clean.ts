@@ -1,4 +1,3 @@
-import editjson from 'edit-json-file';
 import { exec } from 'shelljs';
 
 // DO NOT DELETE THIS FILE
