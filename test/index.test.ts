@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { assign, createMachine } from 'xstate/lib';
 import { generateAsyncMachineTest, generateSyncMachineTest } from '../src';
 

@@ -1,5 +1,5 @@
 {
-  "include": ["src"],
+  "include": ["src/**/*.ts"],
   // "files": ["globals.d.ts"],
   "compilerOptions": {
     /* Visit https://aka.ms/tsconfig.json to read more about this file */
@@ -71,5 +71,5 @@
     "resolveJsonModule": true,
     "forceConsistentCasingInFileNames": false /* Disallow inconsistently-cased references to the same file. */
   },
-  "exclude": ["node_modules", "dist", "test"]
+  "exclude": ["node_modules", "dist", "test",]
 }
