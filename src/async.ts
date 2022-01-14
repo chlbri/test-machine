@@ -3,7 +3,7 @@ import { EventObject, interpret, State } from 'xstate';
 import {
   INVITE_CONTEXT,
   INVITE_NUMBER_STATES,
-  INVITE_VALUE
+  INVITE_VALUE,
 } from './constants/strings';
 import { createInvite } from './functions';
 import type { GenerateAsyncTestsForMachineArgs } from './types';
@@ -62,10 +62,10 @@ export async function generateAsyncMachineTest<
 
   const tester = () => {
     beforeAll(sleeper, timeout + 1000);
-    afterAll(()=>{
-      obs.unsubscribe()
-      service.stop()
-    })
+    afterAll(() => {
+      obs.unsubscribe();
+      service.stop();
+    });
     _beforeAll && beforeAll(_beforeAll.fn, _beforeAll.timeout);
     _afterAll && afterAll(_afterAll.fn, _afterAll.timeout);
 
@@ -106,6 +106,4 @@ export async function generateAsyncMachineTest<
   };
 
   describe(invite, tester);
-
-
 }

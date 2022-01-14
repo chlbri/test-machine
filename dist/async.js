@@ -34,14 +34,20 @@ async function generateAsyncMachineTest({ initialContext, invite, initialState, 
     });
     // jest.setTimeout(timeout);
     const sleeper = async () => {
-        return (0, core_1.sleep)(timeout).finally(() => {
-            obs.unsubscribe();
-            service.stop();
-        });
+        for (const event of events) {
+            await (0, core_1.sleep)(waiterBeforeEachEvent).then(() => {
+                if (service.status < 2)
+                    service.send(event);
+            });
+        }
     };
     states.map(state => state.value); //?
     const tester = () => {
         beforeAll(sleeper, timeout + 1000);
+        afterAll(() => {
+            obs.unsubscribe();
+            service.stop();
+        });
         _beforeAll && beforeAll(_beforeAll.fn, _beforeAll.timeout);
         _afterAll && afterAll(_afterAll.fn, _afterAll.timeout);
         for (let index = 0; index < tests.length; index++) {
@@ -79,11 +85,5 @@ async function generateAsyncMachineTest({ initialContext, invite, initialState, 
         });
     };
     describe(invite, tester);
-    for (const event of events) {
-        (0, core_1.sleep)(waiterBeforeEachEvent).then(() => {
-            if (service.status < 2)
-                service.send(event);
-        });
-    }
 }
 exports.generateAsyncMachineTest = generateAsyncMachineTest;

@@ -4,10 +4,11 @@ exports.createInvite = exports.getReferences = exports.getAllIndexes = exports.w
 const core_1 = require("@core_chlbri/core");
 const nanoid_1 = require("nanoid");
 const Actor_1 = require("xstate/lib/Actor");
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 function withoutSpawnRef(arg) {
     return arg
         ? Object.entries(arg)
-            .filter(([_, value]) => !(0, core_1.isNullish)(value) && !(0, Actor_1.isSpawnedActor)(value))
+            .filter(([, value]) => !(0, core_1.isNullish)(value) && !(0, Actor_1.isSpawnedActor)(value))
             .reduce((prev, [key, value]) => {
             return Object.assign(prev, { [key]: value });
         }, {})
@@ -24,6 +25,7 @@ function getAllIndexes(arr, val) {
     return indexes;
 }
 exports.getAllIndexes = getAllIndexes;
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 function getReferences(args) {
     const names = new Set(args);
     const out = {};
