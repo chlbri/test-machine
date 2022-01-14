@@ -1,9 +1,9 @@
 import { dataCompare, log, sleep } from '@core_chlbri/core';
-import { EventObject, interpret, State, StateSchema } from 'xstate';
+import { EventObject, interpret, State } from 'xstate';
 import {
   INVITE_CONTEXT,
   INVITE_NUMBER_STATES,
-  INVITE_VALUE,
+  INVITE_VALUE
 } from './constants/strings';
 import { createInvite } from './functions';
 import type { GenerateAsyncTestsForMachineArgs } from './types';
@@ -51,16 +51,21 @@ export async function generateAsyncMachineTest<
   // jest.setTimeout(timeout);
 
   const sleeper = async () => {
-    return sleep(timeout).finally(() => {
-      obs.unsubscribe();
-      service.stop();
-    });
+    for (const event of events) {
+      await sleep(waiterBeforeEachEvent).then(() => {
+        if (service.status < 2) service.send(event);
+      });
+    }
   };
 
   states.map(state => state.value); //?
 
   const tester = () => {
     beforeAll(sleeper, timeout + 1000);
+    afterAll(()=>{
+      obs.unsubscribe()
+      service.stop()
+    })
     _beforeAll && beforeAll(_beforeAll.fn, _beforeAll.timeout);
     _afterAll && afterAll(_afterAll.fn, _afterAll.timeout);
 
@@ -69,15 +74,8 @@ export async function generateAsyncMachineTest<
       const test = tests[index];
       const value = test.value;
       const _context = test.context;
-      let state: State<
-        TContext,
-        TEvent,
-        StateSchema<any>,
-        {
-          value: any;
-          context: TContext;
-        }
-      >;
+      let state: State<TContext, TEvent>;
+
       describe(_invite, () => {
         _beforeEach && beforeAll(_beforeEach.fn, _beforeEach.timeout);
         _afterEach && afterAll(_afterEach.fn, _afterEach.timeout);
@@ -109,9 +107,5 @@ export async function generateAsyncMachineTest<
 
   describe(invite, tester);
 
-  for (const event of events) {
-    sleep(waiterBeforeEachEvent).then(() => {
-      if (service.status < 2) service.send(event);
-    });
-  }
+
 }

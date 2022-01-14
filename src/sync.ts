@@ -1,5 +1,5 @@
 import { dataCompare, log } from '@core_chlbri/core';
-import { EventObject, interpret, State, StateSchema } from 'xstate/lib';
+import { EventObject, interpret } from 'xstate/lib';
 import {
   INVITE_CONTEXT,
   INVITE_NUMBER_STATES,
@@ -33,10 +33,9 @@ export function generateSyncMachineTest<
   });
 
   const service = interpret(_machine).start(initialState);
-  const { subscribe, send } = service;
 
   subscribers.forEach(sub => {
-    subscribe(sub);
+    service.subscribe(sub);
   });
 
   const states = [service.state];
@@ -46,6 +45,8 @@ export function generateSyncMachineTest<
   });
 
   const _invites = createInvite(tests.map(test => test.value));
+
+  events.forEach(event => service.send(event));
 
   const tester = () => {
     afterAll(() => {
@@ -59,25 +60,12 @@ export function generateSyncMachineTest<
       const test = tests[index];
       const value = test.value;
       const _context = test.context;
-      let state: State<
-        TContext,
-        TEvent,
-        StateSchema<any>,
-        { value: any; context: TContext }
-      >;
-      const sender = () => {
-        if (index > 0) {
-          const event = events[index - 1];
-          send(event);
-        }
-        state = states[index];
-      };
+      const state = states[index];
 
       describe(_invite, () => {
-        beforeAll(sender);
         _beforeEach && beforeAll(_beforeEach.fn, _beforeEach.timeout);
         _afterEach && afterAll(_afterEach.fn, _afterEach.timeout);
-        it(INVITE_VALUE, async () => {
+        it(INVITE_VALUE, () => {
           expect(value).toBeDefined();
           expect(state).toBeDefined();
           expect(state.matches(value)).toBeTruthy();
