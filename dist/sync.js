@@ -14,9 +14,8 @@ function generateSyncMachineTest({ initialContext, initialState, machine, events
         ...initialContext,
     });
     const service = (0, lib_1.interpret)(_machine).start(initialState);
-    const { subscribe, send } = service;
     subscribers.forEach(sub => {
-        subscribe(sub);
+        service.subscribe(sub);
     });
     const states = [service.state];
     const obs = service.subscribe(state => {
@@ -24,6 +23,7 @@ function generateSyncMachineTest({ initialContext, initialState, machine, events
             states.push(state);
     });
     const _invites = (0, functions_1.createInvite)(tests.map(test => test.value));
+    events.forEach(event => service.send(event));
     const tester = () => {
         afterAll(() => {
             obs.unsubscribe();
@@ -36,19 +36,11 @@ function generateSyncMachineTest({ initialContext, initialState, machine, events
             const test = tests[index];
             const value = test.value;
             const _context = test.context;
-            let state;
-            const sender = () => {
-                if (index > 0) {
-                    const event = events[index - 1];
-                    send(event);
-                }
-                state = states[index];
-            };
+            const state = states[index];
             describe(_invite, () => {
-                beforeAll(sender);
                 _beforeEach && beforeAll(_beforeEach.fn, _beforeEach.timeout);
                 _afterEach && afterAll(_afterEach.fn, _afterEach.timeout);
-                it(strings_1.INVITE_VALUE, async () => {
+                it(strings_1.INVITE_VALUE, () => {
                     expect(value).toBeDefined();
                     expect(state).toBeDefined();
                     expect(state.matches(value)).toBeTruthy();

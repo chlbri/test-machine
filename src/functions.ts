@@ -6,9 +6,7 @@ import { isSpawnedActor } from 'xstate/lib/Actor';
 export function withoutSpawnRef(arg?: any) {
   return arg
     ? Object.entries(arg)
-        .filter(
-          ([, value]) => !isNullish(value) && !isSpawnedActor(value),
-        )
+        .filter(([, value]) => !isNullish(value) && !isSpawnedActor(value))
         .reduce((prev, [key, value]) => {
           return Object.assign(prev, { [key]: value });
         }, {})
