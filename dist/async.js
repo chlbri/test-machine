@@ -27,10 +27,9 @@ async function generateAsyncMachineTest({ initialContext, invite, initialState, 
     subscribers.forEach(subscribe => {
         service.subscribe(subscribe);
     });
-    const states = [service.state];
+    const states = [];
     const obs = service.subscribe(state => {
-        if (state.changed)
-            states.push(state);
+        states.push(state);
     });
     // jest.setTimeout(timeout);
     const sleeper = async () => {
