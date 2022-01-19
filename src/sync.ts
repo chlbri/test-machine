@@ -1,5 +1,5 @@
 import { dataCompare, log } from '@core_chlbri/core';
-import { EventObject, interpret } from 'xstate/lib';
+import { EventObject, interpret, State, StateSchema } from 'xstate';
 import {
   INVITE_CONTEXT,
   INVITE_NUMBER_STATES,
@@ -38,10 +38,18 @@ export function generateSyncMachineTest<
     service.subscribe(sub);
   });
 
-  const states = [service.state];
+  const states: State<
+    TContext,
+    TEvent,
+    StateSchema<any>,
+    {
+      value: any;
+      context: TContext;
+    }
+  >[] = [];
 
   const obs = service.subscribe(state => {
-    if (state.changed) states.push(state);
+    states.push(state);
   });
 
   const _invites = createInvite(tests.map(test => test.value));

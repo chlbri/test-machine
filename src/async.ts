@@ -1,5 +1,5 @@
 import { dataCompare, log, sleep } from '@core_chlbri/core';
-import { EventObject, interpret, State } from 'xstate';
+import { EventObject, interpret, State, StateSchema } from 'xstate';
 import {
   INVITE_CONTEXT,
   INVITE_NUMBER_STATES,
@@ -42,10 +42,18 @@ export async function generateAsyncMachineTest<
     service.subscribe(subscribe);
   });
 
-  const states = [service.state];
+  const states: State<
+    TContext,
+    TEvent,
+    StateSchema<any>,
+    {
+      value: any;
+      context: TContext;
+    }
+  >[] = [];
 
   const obs = service.subscribe(state => {
-    if (state.changed) states.push(state);
+    states.push(state);
   });
 
   // jest.setTimeout(timeout);

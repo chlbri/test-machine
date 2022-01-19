@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.generateSyncMachineTest = void 0;
 const core_1 = require("@core_chlbri/core");
-const lib_1 = require("xstate/lib");
+const xstate_1 = require("xstate");
 const strings_1 = require("./constants/strings");
 const functions_1 = require("./functions");
 function generateSyncMachineTest({ initialContext, initialState, machine, events, tests, subscribers = [], invite, beforeAll: _beforeAll, beforeEach: _beforeEach, afterAll: _afterAll, afterEach: _afterEach, }) {
@@ -13,14 +13,13 @@ function generateSyncMachineTest({ initialContext, initialState, machine, events
         ...machine.initialState.context,
         ...initialContext,
     });
-    const service = (0, lib_1.interpret)(_machine).start(initialState);
+    const service = (0, xstate_1.interpret)(_machine).start(initialState);
     subscribers.forEach(sub => {
         service.subscribe(sub);
     });
-    const states = [service.state];
+    const states = [];
     const obs = service.subscribe(state => {
-        if (state.changed)
-            states.push(state);
+        states.push(state);
     });
     const _invites = (0, functions_1.createInvite)(tests.map(test => test.value));
     events.forEach(event => service.send(event));
