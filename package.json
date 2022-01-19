@@ -25,7 +25,7 @@
     "lint": "yarn prettier && yarn eslint -- --fix",
     "rinit": "ts-node \"./wconfig/rinit.ts\" & yarn yarn:install",
     "npm:prepublish": "ts-node \"./wconfig/pack.ts\" && yarn install",
-    "npm:publish": "git checkout main && yarn npm:prepublish && yarn publish --access public --no-git-checks && git clean -fd && git checkout -- . && yarn && ts-node \"./wconfig/clean.ts\"",
+    "npm:publish": "git checkout main && yarn npm:prepublish && yarn publish --access public --no-git-checks && git clean -fd && git checkout -- . && yarn install && ts-node \"./wconfig/clean.ts\"",
     "clear:test": "jest --clearCache",
     "yarn:install": "yarn install",
     "publish:all": "yarn run rinit && yarn git-publish && yarn npm:publish",
